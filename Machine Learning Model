@@ -1,0 +1,60 @@
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+import random
+
+df = pd.read_csv("train.csv")
+
+
+df = df.drop(columns=['Ticket','PassengerId',"Fare","Name","Cabin",'Embarked',"Pclass"])
+
+df = df.dropna()
+
+dum = pd.get_dummies(df,columns=['Sex'],dtype='int64')
+print(dum)
+
+X = dum[['Age', 'SibSp' , 'Parch' , 'Sex_female',  'Sex_male']]
+Y = dum['Survived']
+print(X)
+print(Y)
+sns.scatterplot(data=dum)
+plt.plot(X,Y)
+
+random.seed(1)
+
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y)
+reg = LinearRegression()
+reg.fit(X_train, Y_train)
+print(reg.score(X_test,Y_test))
+#Logistic learning
+import pandas as pd
+from sklearn.metrics import accuracy_score
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+import random
+df=pd.read_csv('train.csv')
+
+df = df.drop(columns=['Ticket','PassengerId',"Fare","Name","Cabin",'Embarked',"Pclass"])
+
+df = df.dropna()
+
+dum = pd.get_dummies(df,columns=['Sex'],dtype='int64')
+
+
+X=dum[['Sex_male','SibSp']]
+Y=dum['Survived']
+
+
+random.seed(1)
+X_train, X_test,Y_train,Y_test=train_test_split(X,Y,test_size=.30)
+print(X_train)
+
+model=LogisticRegression()
+model.fit(X_train,Y_train)
+Y_pred=model.predict(X_test)
+accuracy=accuracy_score(Y_test,Y_pred)
+print('Model Score',model.score(X_train,Y_train))
+print('Accuracy:',accuracy*100)
